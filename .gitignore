@@ -1,0 +1,16 @@
+# Python 运行缓存
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# 大型回测数据缓存 (包含全市场多年日K缓存，单文件超过100MB超出GitHub单文件限制)
+*.pkl
+cache_*.pkl
+
+# 临时与系统文件
+.DS_Store
+*.log
+*.tmp
+.idea/
+.vscode/

@@ -1,0 +1,150 @@
+{
+  "v02_baseline": {
+    "name": "1. 原版基准 (v0.2 Baseline: 无开盘过滤, 无MA5)",
+    "years": {
+      "2023": {
+        "count": 125,
+        "win_rate": 30.4,
+        "sum_gain": -25.46,
+        "final_cap": 171962.06,
+        "compound_ret": -14.02,
+        "max_dd": 30.5
+      },
+      "2024": {
+        "count": 117,
+        "win_rate": 37.6,
+        "sum_gain": 56.77,
+        "final_cap": 256556.82,
+        "compound_ret": 28.28,
+        "max_dd": 18.3
+      },
+      "2025": {
+        "count": 210,
+        "win_rate": 33.8,
+        "sum_gain": -62.17,
+        "final_cap": 141381.87,
+        "compound_ret": -29.31,
+        "max_dd": 48.2
+      },
+      "2026": {
+        "count": 122,
+        "win_rate": 51.6,
+        "sum_gain": 120.52,
+        "final_cap": 354523.28,
+        "compound_ret": 77.26,
+        "max_dd": 6.9
+      }
+    }
+  },
+  "v03_ma5": {
+    "name": "2. 宏观硬保护闸 (v0.3 MA5: 跌破5日线一律空仓)",
+    "years": {
+      "2023": {
+        "count": 73,
+        "win_rate": 39.7,
+        "sum_gain": 25.03,
+        "final_cap": 224116.11,
+        "compound_ret": 12.06,
+        "max_dd": 11.6
+      },
+      "2024": {
+        "count": 85,
+        "win_rate": 41.2,
+        "sum_gain": 76.57,
+        "final_cap": 285913.4,
+        "compound_ret": 42.96,
+        "max_dd": 11.6
+      },
+      "2025": {
+        "count": 154,
+        "win_rate": 38.3,
+        "sum_gain": -8.11,
+        "final_cap": 187090.43,
+        "compound_ret": -6.45,
+        "max_dd": 34.0
+      },
+      "2026": {
+        "count": 85,
+        "win_rate": 52.9,
+        "sum_gain": 108.39,
+        "final_cap": 336395.79,
+        "compound_ret": 68.2,
+        "max_dd": 6.3
+      }
+    }
+  },
+  "v04_surgical": {
+    "name": "3. 手术刀微观排毒 (v0.4 Surgical: 剔除低开<-1%与跳水<-2.5%, 无MA5)",
+    "years": {
+      "2023": {
+        "count": 94,
+        "win_rate": 35.1,
+        "sum_gain": 2.53,
+        "final_cap": 199659.23,
+        "compound_ret": -0.17,
+        "max_dd": 24.1
+      },
+      "2024": {
+        "count": 81,
+        "win_rate": 46.9,
+        "sum_gain": 104.02,
+        "final_cap": 329141.73,
+        "compound_ret": 64.57,
+        "max_dd": 7.1
+      },
+      "2025": {
+        "count": 146,
+        "win_rate": 43.2,
+        "sum_gain": 63.56,
+        "final_cap": 268002.0,
+        "compound_ret": 34.0,
+        "max_dd": 17.7
+      },
+      "2026": {
+        "count": 73,
+        "win_rate": 56.2,
+        "sum_gain": 106.62,
+        "final_cap": 334551.76,
+        "compound_ret": 67.28,
+        "max_dd": 5.1
+      }
+    }
+  },
+  "v05_volume": {
+    "name": "4. 柔性量价与动态仓位 (v0.5 Volume: 剔除放量出货+弱势半仓防守)",
+    "years": {
+      "2023": {
+        "count": 24,
+        "win_rate": 29.2,
+        "sum_gain": -10.69,
+        "final_cap": 195210.74,
+        "compound_ret": -2.39,
+        "max_dd": 4.8
+      },
+      "2024": {
+        "count": 24,
+        "win_rate": 37.5,
+        "sum_gain": 21.87,
+        "final_cap": 223406.25,
+        "compound_ret": 11.7,
+        "max_dd": 8.1
+      },
+      "2025": {
+        "count": 34,
+        "win_rate": 52.9,
+        "sum_gain": 30.01,
+        "final_cap": 234716.18,
+        "compound_ret": 17.36,
+        "max_dd": 5.8
+      },
+      "2026": {
+        "count": 73,
+        "win_rate": 56.2,
+        "sum_gain": 106.62,
+        "final_cap": 322621.33,
+        "compound_ret": 61.31,
+        "max_dd": 5.1
+      }
+    }
+  }
+}
