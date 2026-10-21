@@ -398,7 +398,7 @@ def generate_trading_action_card(decisions: list, market_snap: dict, account_cap
     # 情景 2: 阶梯分层冲高止盈
     card.append("#### 情景二：阶梯分层冲高止盈 (发生概率约 70%)")
     card.append("* 触发时间: 次日 09:30 ~ 10:00 (早盘黄金半小时)")
-    card.append("* 档位 1【起步保利档】: 盘中最高涨幅 >= +2.5%，一旦从最高点回落超 0.8%，市价全额卖出止盈，锁住小利润；")
+    card.append("* 档位 1【起步保利档】: 盘中最高涨幅 >= +2.0%，一旦从最高点回落超 0.8%，市价全额卖出止盈，锁住小利润；")
     if is_bull:
         card.append(f"* 档位 2【牛市大肉档 (成交额>1.2万亿)】: 盘中最高涨幅 >= +8.0%，一旦从最高点回落超 1.5%，市价全额卖出止盈；")
     else:
@@ -407,7 +407,7 @@ def generate_trading_action_card(decisions: list, market_snap: dict, account_cap
     # 情景 3: 10:00 时间熔断
     card.append("#### 情景三：10:00 时间熔断离场令 (发生概率约 15%)")
     card.append("* 触发时间: 次日 10:00 准时执行")
-    card.append("* 触发条件: 早盘黄金半小时冲高未达 +2.5% 且未封板（横盘滞涨，主力无上攻意图）")
+    card.append("* 触发条件: 早盘黄金半小时冲高未达 +2.0% 且未封板（横盘滞涨，主力无上攻意图）")
     card.append("* 执行操作: 10:00 准时以市价/现价全额卖出清仓！平价或微利微亏出局，绝不持有到下午，把资金腾出来防守，规避全天跳水风险！\n")
     
     # 情景 4: 封死涨停
