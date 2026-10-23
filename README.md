@@ -95,8 +95,8 @@
 ### 1. 环境准备
 
 ```bash
-git clone git@github.com:wax0629/tos.git
-cd tos
+git clone git@github.com:wax0629/catalyst-frontrun.git
+cd catalyst-frontrun
 pip install -r requirements.txt
 ```
 
