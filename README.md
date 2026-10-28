@@ -123,6 +123,7 @@
 
 所有推导细节与实盘审计均记录在 `docs/` 目录中：
 
+* [全栈金融信息源选型、分类体系与自动化抓取工程链路规范](docs/data_sourcing_and_intelligence_pipeline.md)：四级信息源全景矩阵、7x24 签名电报、腾讯/通达信行情抓取与降噪过滤工程链路；
 * [投资催化时序推进与实战决策全景档案](docs/catalyst_timeline_and_battle_ledger.md)：以绝对时间顺序记录从线索抓取到实盘兑现的全链路；
 * [实战交易战绩与全流程复盘审计档案](docs/trade_battle_dossier.md)：单票全生命周期闭环审计与假说印证报告；
 * [策略演化与范式转变日志](docs/strategy_evolution_journal.md)：记录破除机械尾盘量化、确立双层量化基本面的完整心路历程；

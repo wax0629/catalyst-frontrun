@@ -86,7 +86,23 @@ description: A股双层量化基本面·重大催化前瞻抢跑交易体系。�
 
 ---
 
-## 五、 工具脚本与快速运行
+## 五、 全栈信息源选型与自动化抓取工程链路 (Data Pipeline)
+
+详情参见核心规范：[`docs/data_sourcing_and_intelligence_pipeline.md`](docs/data_sourcing_and_intelligence_pipeline.md)
+
+1. **四级信息源矩阵**：
+   * **Tier 1 (官方政经/信披)**：工信部/发改委红头政策、央行流动性操作、[巨潮资讯网 (CNINFO)](http://www.cninfo.com.cn/) 上市公司法定公告；
+   * **Tier 2 (7×24 毫秒级电报)**：[财联社 7×24 电报](https://www.cls.cn/telegraph)（官方接口本地签名 `sign=md5(sha1(...))` 零 Key 抓取）、东方财富/同花顺快讯；
+   * **Tier 3 (交易所微观行情)**：腾讯行情集群 (`qt.gtimg.cn` 毫秒级免封)、通达信 (Mootdx TCP 直连券商主站获取高频 K 线与逐笔)；
+   * **Tier 4 (基本面与研报)**：东财 ReportAPI、Baostock 历史估值、申万行业数据库。
+2. **三道降噪清洗漏斗**：
+   * 排除自媒体“震惊体”标题党；
+   * 仅采纳含部委官员原话、红头文号、交易所公告的客观事实；
+   * 强制校验价格：抓取瞬间标的涨幅必须处于 `0.0% ~ +2.5%` 的 T0 萌芽静默期，超出 $+3.0\%$ 坚决放弃开仓。
+
+---
+
+## 六、 工具脚本与快速运行
 
 * `python scripts/catalyst_radar.py`：实时抓取大盘流动性与监控池标的微观盘口；
 * `python scripts/quantamental_screener.py`：执行双层量化门禁审核（反转、成交额、均线、盈亏比）；
