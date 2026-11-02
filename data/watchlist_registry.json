@@ -1,0 +1,79 @@
+{
+  "updated_at": "2026-11-02 11:15:00 CST",
+  "active_holdings": [],
+  "track1_candidates": [],
+  "track2_reserves": [
+    {
+      "code": "sz300308",
+      "name": "中际旭创",
+      "sector": "光模块/CPO",
+      "support": 550.0,
+      "target": 680.0,
+      "thesis": "Anthropic IPO与全球1.6T高速互联",
+      "earnings_summary": "前三季营收695亿(+178%)，净利222亿(+212%)，订单锁至2027",
+      "added_date": "2026-10-28",
+      "lifecycle_stage": "STAGE_WATCH_PULLBACK"
+    },
+    {
+      "code": "sz300502",
+      "name": "新易盛",
+      "sector": "光模块/硅光",
+      "support": 195.0,
+      "target": 250.0,
+      "thesis": "海外云厂商CapEx与硅光模块替代，借Q3短期扰动杀估值洗透",
+      "earnings_summary": "前三季营收318亿(+93%)，净利113亿(+80%)",
+      "added_date": "2026-10-28",
+      "lifecycle_stage": "STAGE_WATCH_PULLBACK"
+    },
+    {
+      "code": "sz300394",
+      "name": "天孚通信",
+      "sector": "光引擎/精密元件",
+      "support": 140.0,
+      "target": 180.0,
+      "thesis": "62.6%超高毛利无源器件与CPO批量出货",
+      "earnings_summary": "前三季净利20.8亿(+42%)，单季净利8.79亿(+55%)",
+      "added_date": "2026-10-28",
+      "lifecycle_stage": "STAGE_WATCH_PULLBACK"
+    },
+    {
+      "code": "sh688256",
+      "name": "寒武纪",
+      "sector": "国产AI芯片",
+      "support": 850.0,
+      "target": 1050.0,
+      "thesis": "连续三季度规模盈利与国产大模型生态全面上车",
+      "earnings_summary": "前三季营收95亿(+107%)，净利37.15亿(+131%)",
+      "added_date": "2026-10-28",
+      "lifecycle_stage": "STAGE_WATCH_PULLBACK"
+    }
+  ],
+  "archived_cases": [
+    {
+      "case_id": "CASE-01",
+      "code": "sh600699",
+      "name": "均胜电子",
+      "entry_date": "2026-10-22",
+      "entry_price": 20.85,
+      "actual_cost": 21.037,
+      "exit_date": "2026-10-28",
+      "exit_price": 22.58,
+      "net_return": "+7.67%",
+      "status": "COMPLETED_TAKE_PROFIT",
+      "post_mortem": "两度精准命中预设目标区，全额获利了结变现，规避随后-16.5%回撤"
+    },
+    {
+      "case_id": "CASE-02",
+      "code": "sz002212",
+      "name": "天融信",
+      "entry_date": "2026-10-22",
+      "entry_price": 7.05,
+      "actual_cost": 7.062,
+      "exit_date": "2026-10-27",
+      "exit_price": 6.80,
+      "net_return": "-3.70%",
+      "status": "COMPLETED_HARD_STOP",
+      "post_mortem": "冲高未走，午后破位果断硬止损截断亏损，规避随后-20.1%深跌"
+    }
+  ]
+}

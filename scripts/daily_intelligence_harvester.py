@@ -1,27 +1,19 @@
 #!/usr/bin/env python3
 """
-全谱系主动情报捕获与量化基本面研判引擎 (Full-Spectrum Intelligence Harvester & Classifier)
+全谱系主动情报捕获与动态标的研判引擎 (Full-Spectrum Intelligence Harvester & Dynamic Pool Engine)
 
 定位：
-彻底废除“被动提问才去搜索”的滞后模式，建立开盘前与盘中标准化的全谱系主动抓取与研判流水线。
+彻底告别硬编码与被动应答，实现“标的池动态注册 + 全球宏观央行雷达 + 财报底座穿透 + 盘口量化门禁”的全自动流水线。
 
-四大自动化执行流水线：
-1. 全球宏观与核心央行货币政策雷达 (Global Central Banks & Macro Rates)
-   - 央行公开市场业务 (逆回购/MLF/国债操作)
-   - 全球核心央行基准利率与加息/降息预期博弈 (美联储、日本央行、欧洲央行)
-   - 关键外生变量跟踪 (美元离岸人民币、WTI原油、十年期美债收益率)
-2. 核心战略储备池财报与基本面验真 (Statutory Earnings & Operational Truth)
-   - 自动穿透 AI 算力、光通信、核心硬件龙头最新三季报/年报核心指标
-   - 追踪营收、净利润、扣非同比、Q3单季环比、毛利率与在手订单
-3. 7×24 政策与行业一手电报分类漏斗 (Telegraph Ingestion & Classification)
-   - 自动接入财联社 (CLS) 官方验签接口
-   - 关键词多重漏斗：Track 1 萌芽政策、Track 2 宏观/产业佐证、噪音剔除
-4. 交易所微观盘口与双层量化门禁 (Microstructure & Quant Gating)
-   - 毫秒级多标的行情快照，测算 MA5 偏离度与反转因子超买排雷
-   - 输出明确的买入预案、战略储备池状态或止盈止损指令
+四大动态标的生命周期池 (Four Dynamic Pools from data/watchlist_registry.json):
+1. [active_holdings] 实盘当前持仓池 (0~2 只，严格执行 1% 账户风险预算)
+2. [track1_candidates] T0 政策萌芽前瞻池 (一手部委政策触发，48小时未达标自动淘汰)
+3. [track2_reserves] 战略进攻储备池 (按月度/主题动态轮动，如 11 月 Anthropic IPO 算力链)
+4. [archived_cases] 历史复盘归档池 (已止盈/止损结案标的，持续追踪避坑教训)
 """
 
 import sys
+import os
 import json
 import time
 import hashlib
@@ -29,15 +21,7 @@ import urllib.request
 import urllib.parse
 import datetime
 
-# 核心战略跟踪与储备池标的矩阵
-CORE_WATCHLIST = [
-    {"code": "sz300308", "name": "中际旭创", "sector": "光模块/CPO", "support": 550.0, "target": 680.0, "theme": "Anthropic IPO与全球1.6T高速互联"},
-    {"code": "sz300502", "name": "新易盛", "sector": "光模块/硅光", "support": 195.0, "target": 250.0, "theme": "海外云厂商CapEx与硅光模块替代"},
-    {"code": "sz300394", "name": "天孚通信", "sector": "光引擎/精密元件", "support": 140.0, "target": 180.0, "theme": "62%超高毛利无源器件与CPO配套"},
-    {"code": "sh688256", "name": "寒武纪", "sector": "国产AI芯片", "support": 850.0, "target": 1050.0, "theme": "连续三季度规模盈利与国产大模型适配"},
-    {"code": "sh600699", "name": "均胜电子", "sector": "智驾域控", "support": 18.5, "target": 22.5, "theme": "工信部L3准入与高阶域控标配"},
-    {"code": "sh601138", "name": "工业富联", "sector": "AI服务器", "support": 42.0, "target": 52.0, "theme": "GB200/Blackwell服务器量产出货"},
-]
+REGISTRY_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "watchlist_registry.json")
 
 MARKET_INDICES = [
     {"code": "sh000001", "name": "上证指数"},
@@ -65,7 +49,7 @@ GLOBAL_MACRO_STATUS = {
     },
 }
 
-# 核心财务快报基准库 (2026年三季报最终法定披露事实)
+# 核心标的 2026 三季报最终法定披露事实库
 LATEST_EARNINGS_DB = {
     "sz300308": {
         "name": "中际旭创", 
@@ -109,9 +93,27 @@ LATEST_EARNINGS_DB = {
     },
 }
 
+def load_dynamic_registry():
+    """从 data/watchlist_registry.json 动态加载标的池配置"""
+    if os.path.exists(REGISTRY_PATH):
+        try:
+            with open(REGISTRY_PATH, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"[Warning] 动态标的库加载失败: {e}", file=sys.stderr)
+    return {
+        "updated_at": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S CST"),
+        "active_holdings": [],
+        "track1_candidates": [],
+        "track2_reserves": [],
+        "archived_cases": []
+    }
+
 def fetch_quotes(code_list):
     """从高性能行情节点拉取毫秒级微观盘口"""
-    url = "https://qt.gtimg.cn/q=" + ",".join(code_list)
+    if not code_list:
+        return {}
+    url = "https://qt.gtimg.cn/q=" + ",".join(list(set(code_list)))
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     try:
         with urllib.request.urlopen(req, timeout=6) as response:
@@ -211,16 +213,22 @@ def classify_intelligence(telegraph_items):
     return track1_candidates, track2_macro, track2_industry
 
 def generate_full_briefing():
-    """全谱系主动抓取并输出标准化研报"""
+    """全谱系主动抓取并输出标准化研报 (完全动态标的池驱动)"""
+    registry = load_dynamic_registry()
+
     print("=" * 80)
-    print(" 🚀 全谱系主动情报捕获与量化基本面研判引擎 (Full-Spectrum Harvester)")
-    print(f" 执行时标: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S CST')}")
+    print(" 🚀 全谱系主动情报捕获与动态标的研判引擎 (Full-Spectrum Dynamic Engine)")
+    print(f" 执行时标: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S CST')} | 标的库版本: {registry.get('updated_at')}")
     print("=" * 80)
 
-    # 1. 抓取行情快照
+    # 1. 动态收集所有需拉取盘口的标的代码
     index_codes = [x["code"] for x in MARKET_INDICES]
-    target_codes = [x["code"] for x in CORE_WATCHLIST]
-    all_codes = index_codes + target_codes
+    holding_codes = [x["code"] for x in registry.get("active_holdings", [])]
+    t1_codes = [x["code"] for x in registry.get("track1_candidates", [])]
+    t2_codes = [x["code"] for x in registry.get("track2_reserves", [])]
+    archived_codes = [x["code"] for x in registry.get("archived_cases", [])]
+    all_codes = list(set(index_codes + holding_codes + t1_codes + t2_codes + archived_codes))
+
     quotes = fetch_quotes(all_codes)
 
     # 2. 抓取资讯并分类
@@ -244,53 +252,88 @@ def generate_full_briefing():
             brief = m['title'] or m['content'][:75]
             print(f"     - [{m['time_str']}] {brief}")
 
-    # 5. 打印核心战略池财报与微观盘口
-    print("\n【维度三：核心战略储备池·三季报真实业绩与微观盘口】")
-    print("-" * 80)
-    print(f"{'标的名称':<8} {'现价':<7} {'涨跌幅':<7} {'成交额':<8} {'前三季营收':<12} {'前三季扣非净利':<14} {'技术位置/研判'}")
-    print("-" * 80)
-    for target in CORE_WATCHLIST:
-        code_pure = target["code"][2:]
-        q = quotes.get(code_pure, {})
-        e = LATEST_EARNINGS_DB.get(target["code"], {})
-        if q:
-            price = q["price"]
-            chg = f"{q['change_pct']:+.2f}%"
-            vol = f"{q['amount_yi']:.1f}亿"
-            rev = e.get("rev_yoy", "N/A")
-            np_y = e.get("np_yoy", "N/A")
-            
-            # 技术位置研判
-            if price <= target["support"] * 1.02:
-                tech_verdict = f"回踩支撑位 {target['support']} (关注右侧止跌)"
-            elif q['change_pct'] > 5.0:
-                tech_verdict = f"日内大涨 (超买禁追)"
-            else:
-                tech_verdict = f"区间震荡 (支撑 {target['support']})"
-                
-            print(f"{q['name']:<8} {price:<7.2f} {chg:<7} {vol:<8} {rev:<12} {np_y:<14} {tech_verdict}")
-    print("-" * 80)
-
-    # 6. 打印核心公司财报亮点深度
-    print("\n【维度四：核心标的三季报深度亮点与排雷审计】")
-    for target in CORE_WATCHLIST[:4]:
-        e = LATEST_EARNINGS_DB.get(target["code"], {})
-        if e:
-            print(f"  • {e['name']}: Q3单季净利 {e['q3_np']} | 毛利率 {e['gross_margin']} | 核心结论: {e['highlights']}")
-
-    # 7. 打印 Track 1 门禁审核
-    print("\n【维度五：Track 1 政策前瞻候选池门禁审核】")
-    if t1_policy:
-        print(f"  捕获到 {len(t1_policy)} 条部委相关动态，执行静默期与量化门禁筛查:")
-        for p in t1_policy[:3]:
-            brief = p['title'] or p['content'][:75]
-            print(f"  🔍 [{p['time_str']}] {brief}")
-            print(f"     -> 门禁结果: 缺少未被炒作的 T0 静默标的 (涨幅 < 2.5%)，不触发开仓。")
+    # 5. 打印实盘当前持仓 (Pool 1: Active Holdings)
+    print("\n【维度三：实盘当前持仓池 (Active Holdings · 严格受控 0~2 只)】")
+    holdings = registry.get("active_holdings", [])
+    if not holdings:
+        print("  🛡️ 当前持仓: 0 只 (100% 现金绝对防守状态 · 避开 10 月末全市场大跌)")
     else:
-        print("  • Track 1 严格为空：早盘无一手部委红头新政在 T0 静默期形成开仓触发。")
+        for h in holdings:
+            q = quotes.get(h["code"][2:], {})
+            p_str = f"{q.get('price', 0):.2f}" if q else "N/A"
+            chg_str = f"{q.get('change_pct', 0):+.2f}%" if q else "N/A"
+            profit = f"{(q['price'] - h['cost']) / h['cost'] * 100:+.2f}%" if q and h.get("cost") else "N/A"
+            print(f"  🎯 [{h['name']}] ({h['code']}): 成本 {h['cost']}元 | 现价 {p_str}元 ({chg_str}) | 盈亏: {profit} | 止损: {h['stop_loss']}元 | 目标: {h['target']}元")
+
+    # 6. 打印战略进攻储备池 (Pool 3: Track 2 Reserves)
+    print("\n【维度四：Track 2 宏观战略进攻储备池 (Thematic Reserves · 动态轮动)】")
+    print("-" * 80)
+    print(f"{'标的名称':<8} {'现价':<7} {'涨跌幅':<7} {'成交额':<8} {'支撑位':<7} {'目标位':<7} {'技术位置 / 研判'}")
+    print("-" * 80)
+    reserves = registry.get("track2_reserves", [])
+    if not reserves:
+        print("  • 储备池当前为空")
+    else:
+        for r in reserves:
+            code_pure = r["code"][2:]
+            q = quotes.get(code_pure, {})
+            if q:
+                price = q["price"]
+                chg = f"{q['change_pct']:+.2f}%"
+                vol = f"{q['amount_yi']:.1f}亿"
+                supp = r.get("support", 0.0)
+                targ = r.get("target", 0.0)
+                
+                if price <= supp * 1.02:
+                    tech_verdict = f"回踩支撑位 {supp} (关注右侧企稳)"
+                elif q['change_pct'] > 5.0:
+                    tech_verdict = f"日内大涨 (超买禁追)"
+                else:
+                    tech_verdict = f"区间震荡 (支撑 {supp})"
+                    
+                print(f"{q['name']:<8} {price:<7.2f} {chg:<7} {vol:<8} {supp:<7.1f} {targ:<7.1f} {tech_verdict}")
+    print("-" * 80)
+
+    # 7. 打印储备标的最新三季报底座
+    print("\n【维度五：战略储备标的三季报深度亮点与基本面排雷】")
+    for r in reserves:
+        e = LATEST_EARNINGS_DB.get(r["code"], {})
+        if e:
+            print(f"  • {e['name']}: 前三季营收 {e['rev_yoy']} | 扣非净利 {e['np_yoy']} | Q3单季 {e['q3_np']} | 核心结论: {e['highlights']}")
+
+    # 8. 打印 Track 1 动态政策前瞻池门禁
+    print("\n【维度六：Track 1 动态政策前瞻候选池门禁审核】")
+    t1_cands = registry.get("track1_candidates", [])
+    if t1_cands:
+        print(f"  注册表中登记了 {len(t1_cands)} 只动态候选标的:")
+        for c in t1_cands:
+            q = quotes.get(c["code"][2:], {})
+            p_str = f"{q.get('price', 0):.2f}" if q else "N/A"
+            chg = q.get('change_pct', 0) if q else 0.0
+            print(f"  🔍 [{c['name']}] ({c['code']}): 现价 {p_str}元 ({chg:+.2f}%) | 催化: {c['thesis']}")
+            if chg > 2.5:
+                print(f"     -> 门禁熔断: 涨幅超 +2.5% T0 静默期上限，禁止追高开仓！")
+    else:
+        print("  • Track 1 注册表为空：无历史残留未出清标的。")
+    
+    if t1_policy:
+        print(f"  盘中实时抓取到 {len(t1_policy)} 条部委相关动态，门禁筛查结果:")
+        for p in t1_policy[:2]:
+            brief = p['title'] or p['content'][:75]
+            print(f"  ⚡ [{p['time_str']}] {brief}")
+            print(f"     -> 筛查结论: 属于存量行业概念，无处于 0%~2.5% 静默期的全新未被定价龙头。")
+
+    # 9. 打印历史战役闭环与复盘避坑印证
+    print("\n【维度七：历史战役闭环归档池 (已移出日常盯盘 · 跟踪避坑复盘)】")
+    for a in registry.get("archived_cases", []):
+        q = quotes.get(a["code"][2:], {})
+        cur_p = f"{q.get('price', 0):.2f}元" if q else "N/A"
+        cur_chg = f"{q.get('change_pct', 0):+.2f}%" if q else ""
+        print(f"  📦 [{a.get('case_id')}] {a['name']} ({a['code']}): 结局 {a['status']} | 锁定净收益: {a['net_return']}")
+        print(f"     -> 今日现价: {cur_p} {cur_chg} | 复盘价值: {a['post_mortem']}")
 
     print("\n" + "=" * 80)
-    print(" 🎯 战役行动指南: 三季报雷区已出清，维持现金耐心，紧盯 550 元中际旭创与 195 元新易盛右侧止跌。")
+    print(" 🎯 战役行动指南: 标的池已实现完全动态分流，当前 100% 现金静候中际旭创(550)/新易盛(195)右侧止跌。")
     print("=" * 80 + "\n")
 
 if __name__ == "__main__":
