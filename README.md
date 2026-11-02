@@ -141,21 +141,28 @@ cd catalyst-frontrun
 pip install -r requirements.txt
 ```
 
-### 2. 实时大盘环境与催化标的盘口雷达
+### 2. 全谱系主动情报捕获与量化基本面研判引擎 (每日晨报/盘中首选)
+
+```bash
+python scripts/daily_intelligence_harvester.py
+```
+*自动聚合“全球核心央行利率态势 + 核心战略储备池三季报深度 + 7×24 官方验签电报 + 实时微观盘口”，一键输出结构化双轨研报。*
+
+### 3. 实时大盘环境与催化标的盘口雷达
 
 ```bash
 python scripts/catalyst_radar.py
 ```
-*实时抓取沪深主板流动性状态，核算均胜电子、天融信等监控池标的最新盈亏比与支撑阻力位。*
+*实时抓取沪深主板流动性状态，核算监控池标的最新盈亏比与支撑阻力位。*
 
-### 3. 双层量化基本面门禁筛选评估
+### 4. 双层量化基本面门禁筛选评估
 
 ```bash
 python scripts/quantamental_screener.py
 ```
 *自动运行 5 日反转排雷、主力资金 Q 因子检验、均线支撑与盈亏比评估，输出 BUY / REJECT 决策。*
 
-### 4. 持仓全生命周期与动态止盈止损跟踪
+### 5. 持仓全生命周期与动态止盈止损跟踪
 
 ```bash
 python scripts/trade_lifecycle_manager.py

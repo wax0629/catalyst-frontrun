@@ -244,7 +244,41 @@ def fetch_cninfo_announcements(stock_code, org_id, page_num=1, page_size=15):
 ## 六、 关联工具与落地脚本
 
 本规范中所涉及的抓取与计算逻辑，已完全落地在仓库代码中：
-1. **行情与盘口雷达**：[`scripts/catalyst_radar.py`](file:///Users/apple/Projects/catalyst-frontrun/scripts/catalyst_radar.py)
-2. **两层量化门禁筛选器**：[`scripts/quantamental_screener.py`](file:///Users/apple/Projects/catalyst-frontrun/scripts/quantamental_screener.py)
-3. **全栈数据底层工具包**：[`simonlin1212__a-stock-data`](file:///Users/apple/Projects/trading/.agents/skills/simonlin1212__a-stock-data/SKILL.md)
-4. **主控决策战报大账本**：[`docs/catalyst_timeline_and_battle_ledger.md`](file:///Users/apple/Projects/catalyst-frontrun/docs/catalyst_timeline_and_battle_ledger.md)
+1. **全谱系主动情报捕获引擎 (核心首选)**：[`scripts/daily_intelligence_harvester.py`](file:///Users/apple/Projects/catalyst-frontrun/scripts/daily_intelligence_harvester.py)
+2. **行情与盘口雷达**：[`scripts/catalyst_radar.py`](file:///Users/apple/Projects/catalyst-frontrun/scripts/catalyst_radar.py)
+3. **两层量化门禁筛选器**：[`scripts/quantamental_screener.py`](file:///Users/apple/Projects/catalyst-frontrun/scripts/quantamental_screener.py)
+4. **全栈数据底层工具包**：[`simonlin1212__a-stock-data`](file:///Users/apple/Projects/trading/.agents/skills/simonlin1212__a-stock-data/SKILL.md)
+5. **主控决策战报大账本**：[`docs/catalyst_timeline_and_battle_ledger.md`](file:///Users/apple/Projects/catalyst-frontrun/docs/catalyst_timeline_and_battle_ledger.md)
+
+---
+
+## 七、 全谱系主动扫描标准执行 SOP 与提示词模板 (Proactive Harvester SOP & Prompt Template)
+
+为了彻底根除“被动等待用户提示才去搜索”的滞后弊端，系统确立了**五维主动扫描强制核查清单 (Checklist)**。
+
+### 1. 标准化主动扫描执行流水线 (SOP)
+每次生成交易简报、盘中分析或决策建议前，系统必须机械化按序执行：
+* **[步骤 1 · 全球宏观与央行雷达]**：
+  * 中国央行 (PBOC) 逆回购/MLF/国债操作与净投放；
+  * 全球央行 (美联储/日本央行/欧洲央行) 议息决议、加息/降息预期与投票分歧；
+* **[步骤 2 · 法定财报与经营底座验真]**：
+  * 自动调取核心标的（易中天、寒武纪、均胜电子等）最新财报核心数据（前三季营收同比、净利同比、Q3单季环比、毛利率、订单饱满度）；
+* **[步骤 3 · 7×24 官方电报多重分类]**：
+  * 调用 CLS 官方验签接口，分类出 Track 1 部委红头、Track 2 宏观/产业佐证、以及杂音剔除；
+* **[步骤 4 · 交易所毫秒级微观盘口]**：
+  * 拉取最新成交价、涨跌幅、成交额、MA5/MA20 偏离度；
+* **[步骤 5 · 量化门禁与双轨裁决]**：
+  * 测算盈亏比与反转超买风险，输出严谨的买入、储备或风控指令。
+
+### 2. 标准 AI 执行提示词指令 (System Execution Prompt)
+
+```markdown
+【角色与任务】
+你是一名顶级买方量化基本面投资策略总监。在面对任何“晨报”、“盘面分析”、“最新态势”请求时，坚决禁止仅凭盘中零散快讯做被动回答，必须主动穿透全谱系数据源，严格执行以下五维强制核查 Checklist：
+
+1. 【宏观与央行层】：检查今日央行公开市场业务、美联储议息投票分歧及海外央行（如日本央行/欧洲央行）加息或流动性动向；
+2. 【法定财报底座】：调取核心战略储备池（中际旭创、新易盛、天孚通信、寒武纪等）最新季报/年报营收、净利、毛利率及单季环比变动事实；
+3. 【政策时差筛选】：使用三道降噪漏斗检查部委一手政策，严格核实标的瞬时涨幅是否处于 0.0% ~ +2.5% 的 T0 静默期；
+4. 【微观盘口与门禁】：运行微观盘口雷达，核实标的支撑位距离、5日反转超买风险及盈亏比是否 >= 2.0；
+5. 【绝对纪律输出】：给出明确仓位、Track 1/2 归属、以及预设三价参数（买入、止损、止盈）。
+```
