@@ -221,13 +221,12 @@ def generate_full_briefing():
     print(f" 执行时标: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S CST')} | 标的库版本: {registry.get('updated_at')}")
     print("=" * 80)
 
-    # 1. 动态收集所有需拉取盘口的标的代码
+    # 1. 动态收集所有需拉取盘口的标的代码 (已归档标的彻底移出盯盘与行情拉取)
     index_codes = [x["code"] for x in MARKET_INDICES]
     holding_codes = [x["code"] for x in registry.get("active_holdings", [])]
     t1_codes = [x["code"] for x in registry.get("track1_candidates", [])]
     t2_codes = [x["code"] for x in registry.get("track2_reserves", [])]
-    archived_codes = [x["code"] for x in registry.get("archived_cases", [])]
-    all_codes = list(set(index_codes + holding_codes + t1_codes + t2_codes + archived_codes))
+    all_codes = list(set(index_codes + holding_codes + t1_codes + t2_codes))
 
     quotes = fetch_quotes(all_codes)
 
@@ -323,17 +322,8 @@ def generate_full_briefing():
             print(f"  ⚡ [{p['time_str']}] {brief}")
             print(f"     -> 筛查结论: 属于存量行业概念，无处于 0%~2.5% 静默期的全新未被定价龙头。")
 
-    # 9. 打印历史战役闭环与复盘避坑印证
-    print("\n【维度七：历史战役闭环归档池 (已移出日常盯盘 · 跟踪避坑复盘)】")
-    for a in registry.get("archived_cases", []):
-        q = quotes.get(a["code"][2:], {})
-        cur_p = f"{q.get('price', 0):.2f}元" if q else "N/A"
-        cur_chg = f"{q.get('change_pct', 0):+.2f}%" if q else ""
-        print(f"  📦 [{a.get('case_id')}] {a['name']} ({a['code']}): 结局 {a['status']} | 锁定净收益: {a['net_return']}")
-        print(f"     -> 今日现价: {cur_p} {cur_chg} | 复盘价值: {a['post_mortem']}")
-
     print("\n" + "=" * 80)
-    print(" 🎯 战役行动指南: 标的池已实现完全动态分流，当前 100% 现金静候中际旭创(550)/新易盛(195)右侧止跌。")
+    print(" 🎯 战役行动指南: 标的池已实现完全动态分流，当前 100% 现金静候中际旭创(500)/新易盛(180)右侧止跌。")
     print("=" * 80 + "\n")
 
 if __name__ == "__main__":
