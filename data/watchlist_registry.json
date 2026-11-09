@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-03 16:30:00 CST",
+  "updated_at": "2026-11-09 10:21:14 CST",
   "active_holdings": [],
   "track1_candidates": [],
   "track2_reserves": [
@@ -46,6 +46,16 @@
       "earnings_summary": "前三季营收95亿(+107%)，净利37.15亿(+131%)",
       "added_date": "2026-10-28",
       "lifecycle_stage": "STAGE_EXTREME_PANIC_WASHOUT"
+    },
+    {
+      "code": "sh515880",
+      "name": "通信ETF",
+      "sector": "通信/算力",
+      "support": 0.4,
+      "target": 0.475,
+      "thesis": "替代中际旭创小资金试仓，深度绑定易中天光通信主升",
+      "earnings_summary": "前三重仓中际旭创+新易盛+天孚通信占比超30%",
+      "added_date": "2026-11-09"
     }
   ],
   "archived_cases": [
@@ -70,7 +80,7 @@
       "entry_price": 7.05,
       "actual_cost": 7.062,
       "exit_date": "2026-10-27",
-      "exit_price": 6.80,
+      "exit_price": 6.8,
       "net_return": "-3.70%",
       "status": "COMPLETED_HARD_STOP",
       "post_mortem": "冲高未走，午后破位果断硬止损截断亏损，规避随后-20.1%深跌"
