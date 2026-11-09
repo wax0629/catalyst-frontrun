@@ -323,7 +323,11 @@ def generate_full_briefing():
             print(f"     -> 筛查结论: 属于存量行业概念，无处于 0%~2.5% 静默期的全新未被定价龙头。")
 
     print("\n" + "=" * 80)
-    print(" 🎯 战役行动指南: 标的池已实现完全动态分流，当前 100% 现金静候中际旭创(500)/新易盛(180)右侧止跌。")
+    if active:
+        holding_summary = ", ".join([f"{h['name']}(现价 {quotes.get(h['code'][2:], {}).get('price', h.get('cost', 0)):.3f}元, 止损 {h.get('stop_loss', 0)}元)" for h in active])
+        print(f" 🎯 战役行动指南: 实盘持仓严格受控运行 [{holding_summary}]，今晚完成云端条件单挂单；储备池标的保持右侧跟踪。")
+    else:
+        print(" 🎯 战役行动指南: 标的池已实现完全动态分流，当前 100% 现金静候战略储备池右侧企稳与 T0 催化萌芽。")
     print("=" * 80 + "\n")
 
 if __name__ == "__main__":
