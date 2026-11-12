@@ -259,7 +259,8 @@ def generate_full_briefing():
     else:
         for h in holdings:
             q = quotes.get(h["code"][2:], {})
-            p_str = f"{q.get('price', 0):.2f}" if q else "N/A"
+            raw_p = q.get('price', 0) if q else 0
+            p_str = (f"{raw_p:.3f}" if raw_p < 10 else f"{raw_p:.2f}") if q else "N/A"
             chg_str = f"{q.get('change_pct', 0):+.2f}%" if q else "N/A"
             profit = f"{(q['price'] - h['cost']) / h['cost'] * 100:+.2f}%" if q and h.get("cost") else "N/A"
             print(f"  🎯 [{h['name']}] ({h['code']}): 成本 {h['cost']}元 | 现价 {p_str}元 ({chg_str}) | 盈亏: {profit} | 止损: {h['stop_loss']}元 | 目标: {h['target']}元")
@@ -323,9 +324,10 @@ def generate_full_briefing():
             print(f"     -> 筛查结论: 属于存量行业概念，无处于 0%~2.5% 静默期的全新未被定价龙头。")
 
     print("\n" + "=" * 80)
-    if active:
-        holding_summary = ", ".join([f"{h['name']}(现价 {quotes.get(h['code'][2:], {}).get('price', h.get('cost', 0)):.3f}元, 止损 {h.get('stop_loss', 0)}元)" for h in active])
-        print(f" 🎯 战役行动指南: 实盘持仓严格受控运行 [{holding_summary}]，今晚完成云端条件单挂单；储备池标的保持右侧跟踪。")
+    holdings = registry.get("active_holdings", [])
+    if holdings:
+        holding_summary = ", ".join([f"{h['name']}(现价 {quotes.get(h['code'][2:], {}).get('price', h.get('cost', 0)):.3f}元, 止损 {h.get('stop_loss', 0)}元)" for h in holdings])
+        print(f" 🎯 战役行动指南: 实盘持仓严格受控运行 [{holding_summary}]，云端条件单值守防守；储备池标的进入主升加速。")
     else:
         print(" 🎯 战役行动指南: 标的池已实现完全动态分流，当前 100% 现金静候战略储备池右侧企稳与 T0 催化萌芽。")
     print("=" * 80 + "\n")
