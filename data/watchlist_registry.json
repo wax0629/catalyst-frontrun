@@ -1,16 +1,6 @@
 {
-  "updated_at": "2026-11-11 14:26:30 CST",
-  "active_holdings": [
-    {
-      "code": "sh515880",
-      "name": "通信ETF",
-      "cost": 0.417,
-      "stop_loss": 0.44,
-      "target": 0.485,
-      "thesis": "11-11盘中精准触及0.460一档止盈50%(3000股，已落袋+10.31%)；余半仓3000股将利润保卫线大幅上移至0.440元，目标上移至0.485元博弈下周Anthropic IPO",
-      "entry_date": "2026-11-09 14:08"
-    }
-  ],
+  "updated_at": "2026-11-13 10:08:01 CST",
+  "active_holdings": [],
   "track1_candidates": [],
   "track2_reserves": [
     {
@@ -84,6 +74,16 @@
       "net_return": "-3.70%",
       "status": "COMPLETED_HARD_STOP",
       "post_mortem": "冲高未走，午后破位果断硬止损截断亏损，规避随后-20.1%深跌"
+    },
+    {
+      "case_id": "CASE-03",
+      "code": "sh515880",
+      "name": "通信ETF",
+      "exit_price": 0.45,
+      "net_return": "+7.91%",
+      "status": "SUCCESS_TAKE_PROFIT",
+      "exit_date": "2026-11-13",
+      "post_mortem": "T0低吸0.417建仓，0.460减半锁定+10.31%，余仓0.440条件单守住利润，规避板块-9%深跌，净赚198元闭环"
     }
   ]
 }
